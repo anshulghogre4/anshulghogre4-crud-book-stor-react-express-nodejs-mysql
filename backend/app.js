@@ -8,11 +8,11 @@ const userRoutes = require("./routes/userRoutes");
 const bodyParser = require("body-parser");
 
 
-
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use("/api", booksRoutes,userRoutes);
-app.use(cors());
+
 
 module.exports =app;
 

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { addBook, updateBook } from '../services/api';
 import "./Home.css"
 
-export default function BookForm({ book }) {
+export default function BookForm({ book,refreshData}) {
 
     
     const [form, setForm] = useState({
@@ -27,14 +28,25 @@ export default function BookForm({ book }) {
         setForm(tempForm);
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         // api call create new record
-       /*  if (form.id) {
-            const updatedBook = updateBook(form);
+        if (form.id) {
+            const resp = await updateBook(form);
+            if (resp.data) {
+                toast.success("Book updated!");
+                handleReset();
+            }
         } else {
-            const createBook = addBook(form);
-        } */
+            const resp = await addBook(form);
+            if (resp.data) {
+                toast.success("Book added successfully!");
+                handleReset();
+            }
+        } 
+
+            refreshData();
+
     }
 
     const handleReset = () => {

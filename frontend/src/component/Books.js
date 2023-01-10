@@ -1,46 +1,42 @@
 import React, { useEffect, useState } from 'react'
 import { deleteBook, getBooks } from '../services/api';
 
-export default function Books({ onEdit }) {
+export default function Books({ onEdit, isRefresh,setRefresh }) {
 
     const [books, setBooks] = useState([]);
 
-    useEffect(() => {
-        // api call to all books
-        // const bookList = await getBooks();
+         const getAllBooks = async ()=>{
+            const Booklist = await getBooks();
+            setBooks(Booklist);
+         }
 
-        const bookList = [
-            {
-                "id": 1,
-                "title": "So Alice got up.",
-                "author": "Grady Harris",
-                "genre": "Qui",
-                "description": "Alice, 'but I know all sorts of things, and she, oh! she knows such a hurry that she had been found and handed back to them, and considered a little, half expecting to see it pop down a very little!.",
-                "published": "1997-06-21",
-                "publisher": "Velit Incidunt"
-            },
-            {
-                "id": 2,
-                "title": "Duchess said in a.",
-                "author": "Duncan Little",
-                "genre": "Qui",
-                "description": "Knave was standing before them, in chains, with a sigh. 'I only took the thimble, saying 'We beg your pardon!' she exclaimed in a coaxing tone, and she looked down at her hands, and was looking.",
-                "isbn": "9789119179050",
-                "published": "2012-05-06",
-                "publisher": "Est Alias"
-            }]
-        setBooks(bookList);
+    useEffect(() => {
+      
+        getAllBooks();
     }, []);
 
+    useEffect(() => {
+      if (isRefresh) {
+        getAllBooks();
+        setRefresh();
+      }
+        
+    }, [isRefresh]);
+
+    
     
 
     const handleEdit = (book) => {
         onEdit(book);
     }
 
-    const handleDelete = (bookId) => {
-        console.log("delete record");
-        // deleteBook(bookId)
+    const handleDelete = async(bookId) => {
+        const result = window.confirm("Are you sure you want to delete this book?");
+        if (result) {
+            deleteBook(bookId).then(res => {
+                if (res) getAllBooks();
+            });
+        }
     }
 
     return (

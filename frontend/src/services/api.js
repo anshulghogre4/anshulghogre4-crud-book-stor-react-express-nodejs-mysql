@@ -1,12 +1,13 @@
 import axios from "axios"
 import { toast } from "react-toastify";
-import { BASE_URL, BOOKS, LOGIN } from "./constants"
+import { ADDBOOKS, BASE_URL, BOOKS, DELETEBOOK, LOGIN, UPDATEBOOK } from "./constants"
 
 
 const getBooks = async () => {
     try {
-        // "http://localhost:1920/api/books"
-        return await axios.get(BASE_URL + BOOKS);
+          const resp = await axios.get(BASE_URL + BOOKS);
+          
+          return resp.data.books;
     } catch (err) {
         toast.error("books fetching error!")
         return [];
@@ -16,7 +17,7 @@ const getBooks = async () => {
 const addBook = async (book) => {
     try {
         // "http://localhost:1920/api/books"
-        return await axios.post(BASE_URL + BOOKS, book)
+        return await axios.post(BASE_URL + ADDBOOKS, book)
     } catch (err) {
         toast.error("book not added. Try again!")
         return {};
@@ -26,7 +27,7 @@ const addBook = async (book) => {
 const updateBook = async (book) => {
     try {
         // "http://localhost:1920/api/books"
-        return await axios.put(BASE_URL + BOOKS, book)
+        return await axios.put(BASE_URL + UPDATEBOOK, book)
     } catch (err) {
         toast.error("book not update. Try again!")
         return {};
@@ -37,10 +38,15 @@ const updateBook = async (book) => {
 const deleteBook = async (bookId) => {
     try {
         // "http://localhost:1920/api/books/:id"
-        await axios.delete(BASE_URL + BOOKS + "/" + bookId)
+      const resp =  await axios.delete(BASE_URL + DELETEBOOK + "/" + bookId)
+
+      if (resp.data) {
+        toast.success("Deleted successfully!")
+        return true;
+      }
     } catch (err) {
         toast.error("book not deleted. Try again!")
-        { };
+        return false;
     }
 }
 
@@ -49,7 +55,7 @@ const doLogin = async (loginForm) => {
         // "http://localhost:1920/api/login"
         return await axios.post(BASE_URL + LOGIN, loginForm)
     } catch (err) {
-        toast.error("book not added. Try again!")
+            toast.error("invalid Credentials!")
         return {};
     }
 }
